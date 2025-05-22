@@ -11,6 +11,7 @@ public struct Renderable<V: View, E: Equatable>: View {
     @Binding var renderedData: Data?
     let view: () -> V
 
+    @available(*, deprecated, renamed: "init(trigger:renderedData:_:)", message: "")
     public init(
         updateCounter: Binding<E>,
         renderedData: Binding<Data?>,
