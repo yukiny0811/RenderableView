@@ -8,39 +8,30 @@ public struct Renderable<V: View, E: Equatable>: View {
     @Environment(\.displayScale) private var displayScale
 
     @Binding var trigger: E
-    @Binding var renderedData: Data?
     let view: () -> V
-
-    @available(*, deprecated, renamed: "init(trigger:renderedData:_:)", message: "")
-    public init(
-        updateCounter: Binding<E>,
-        renderedData: Binding<Data?>,
-        @ViewBuilder _ view: @escaping () -> V
-    ) {
-        self._trigger = updateCounter
-        self._renderedData = renderedData
-        self.view = view
-    }
+    let onTrigger: (Data?) -> Void
 
     public init(
         trigger: Binding<E>,
-        renderedData: Binding<Data?>,
-        @ViewBuilder _ view: @escaping () -> V
+        @ViewBuilder _ view: @escaping () -> V,
+        onTrigger: @escaping (Data?) -> Void
     ) {
         self._trigger = trigger
-        self._renderedData = renderedData
         self.view = view
+        self.onTrigger = onTrigger
     }
 
     public var body: some View {
         view()
             .onChange(of: trigger) {
-                renderedData = render()
+                Task {
+                    await onTrigger(render())
+                }
             }
     }
 
     @MainActor
-    func render() -> Data? {
+    func render() async -> Data? {
         let renderer = ImageRenderer(
             content: view()
         )

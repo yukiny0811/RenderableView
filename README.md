@@ -1,10 +1,9 @@
-//
-//  ContentView.swift
-//  Demo
-//
-//  Created by Yuki Kuwashima on 2025/02/14.
-//
 
+# RenderableView
+
+## Usage
+
+```swift
 import SwiftUI
 import RenderableView
 
@@ -31,7 +30,4 @@ struct ContentView: View {
         }
     }
 }
-
-#Preview {
-    ContentView()
-}
+```
